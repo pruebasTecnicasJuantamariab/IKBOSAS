@@ -1,0 +1,94 @@
+<div class="grid-container">
+  <h1 class="mat-h1">Dash board</h1>
+  <mat-grid-list cols="2" rowHeight="350px">
+    <mat-grid-tile *ngFor="let card of cards | async" [colspan]="card.cols" [rowspan]="card.rows">
+      <mat-card class="dashboard-card">
+        <mat-card-header>
+          <mat-card-title>
+            {{card.title}}
+            <mat-card class="inputs-grid" [formGroup]="filterForm">
+              <mat-form-field appearance="outline">
+                <mat-label>Filters</mat-label>
+                <mat-select formControlName="filter" required (ngModelChange)="onChangeFilter($event)">
+                    <mat-option *ngFor="let s of filterList" [value]="s.id">
+                        {{s.fields}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Value</mat-label>
+              <mat-select formControlName="value" required (ngModelChange)="onChangeValue($event)">
+                  <mat-option *ngFor="let v of valueList" [value]="v.code">
+                      {{v.name}}
+                  </mat-option>
+              </mat-select>
+          </mat-form-field>
+            <mat-form-field appearance="outline" class="example-form-field">
+              <mat-label>Date Range</mat-label>
+              <mat-date-range-input [formGroup]="filterForm" [rangePicker]="rangePicker">
+                  <input matStartDate formControlName="dateini" placeholder="Start">
+                  <input matEndDate formControlName="datefin" placeholder="End">
+              </mat-date-range-input>
+              <mat-datepicker-toggle matSuffix [for]="rangePicker"></mat-datepicker-toggle>
+              <mat-date-range-picker #rangePicker>
+                  <mat-date-range-picker-actions>
+                      <button mat-button matDateRangePickerCancel>Cancelar</button>
+                      <button mat-raised-button color="primary" matDateRangePickerApply>Aceptar</button>
+                  </mat-date-range-picker-actions>
+              </mat-date-range-picker>
+          </mat-form-field>
+          <div class="div-button">
+            <button (click)="find()" mat-stroked-button class="button-buscar" [disabled]="filterForm.invalid">
+                <mat-icon>search</mat-icon>&nbsp;&nbsp;
+                Find
+            </button>
+        </div>
+            </mat-card>
+            <mat-menu #menu="matMenu" xPosition="before">
+              <button mat-menu-item>Expand</button>
+              <button mat-menu-item>Remove</button>
+            </mat-menu>
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content class="dashboard-card-content">
+        </mat-card-content>
+      </mat-card>
+    </mat-grid-tile>
+  </mat-grid-list>
+  <div class="table-container">
+    <table class="table" style="margin: 0 auto; width: 80%; background-color: #ffffff; color: #000000; font-size: 16px;">
+      <thead>
+        <tr>
+          <th style="width: 150px;">Date</th>
+          <th style="width: 150px;" *ngFor="let h of headers">{{h}}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of dataSource">
+          <td style="text-align: center;">{{ item.date }}</td>
+          <td style="text-align: center;" *ngIf="headers.includes('customer')">{{ item.customer }}</td>
+          <td style="text-align: center;" *ngIf="headers.includes('country')">{{ item.country }}</td>
+          <td style="text-align: center;" *ngIf="headers.includes('provider')">{{ item.provider }}</td>
+          <td style="text-align: center;" *ngIf="headers.includes('category')">{{ item.category }}</td>
+          <td style="text-align: center;" *ngIf="headers.includes('variety')">{{ item.variety }}</td>
+          <td style="text-align: center;" *ngIf="headers.includes('color')">{{ item.color }}</td>
+          <td *ngIf="flagPrice">{{ item.price }}</td>
+          <td *ngIf="!flagPrice">{{ item.stems }}</td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <td><strong>Total</strong></td>
+          <td *ngIf="headers.includes('customer')"></td>
+          <td *ngIf="headers.includes('country')"></td>
+          <td *ngIf="headers.includes('provider')"></td>
+          <td *ngIf="headers.includes('category')"></td>
+          <td *ngIf="headers.includes('variety')"></td>
+          <td *ngIf="headers.includes('color')"></td>
+          <td *ngIf="headers.includes('price')"></td>
+          <td >{{ total }}</td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+</div>
